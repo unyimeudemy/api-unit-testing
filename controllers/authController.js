@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 import { S3Service } from "../utils/s3Service.js";
 
 // Register a new user   =>   /api/v1/register
-export const registerUser = async (req, res) => {
+export const registerUser = async (req, res, next) => {
   try {
     let { name, email, password } = req.body;
 
@@ -27,7 +27,9 @@ export const registerUser = async (req, res) => {
     res.status(201).json({
       token,
     });
+    next();
   } catch (error) {
+    console.log("error💥💥: ", error);
     if (error.code === 11000) {
       res.status(400).json({
         error: "Duplicate email",
@@ -37,7 +39,7 @@ export const registerUser = async (req, res) => {
 };
 
 // Login user  =>  /api/v1/login
-export const loginUser = async (req, res, next) => {
+export const loginUser = async (req, res) => {
   try {
     const { email, password } = req.body;
 
